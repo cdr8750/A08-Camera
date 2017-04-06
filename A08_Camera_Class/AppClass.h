@@ -22,6 +22,8 @@ class AppClass : public ReEngAppClass
 	bool lastPressedM;
 	bool lastPressedN;
 
+	sf::Vector2f oM;
+
 	matrix4 m_m4Projection;
 	matrix4 m_m4View;
 public:
@@ -42,6 +44,8 @@ public:
 	the purpose of this member function is to initialize member variables specific for this lesson
 	*/
 	virtual void InitVariables(void);
+
+
 
 	/*
 	Update

@@ -7,16 +7,17 @@ void AppClass::InitWindow(String a_sWindowName)
 }
 void AppClass::InitVariables(void)
 {
+
 	//Generate the Cone
 	m_pCone = new PrimitiveClass();
-	m_pCone->GenerateCone(100.0f, 100.0f, 10, RERED);
+	m_pCone->GenerateCone(70.0f, 70.0f, 10, RERED);
 
 	m_pPlane = new PrimitiveClass();
 	m_pPlane->GeneratePlane(10000.0f, REBLUE);
 
 	//Generate the Cylinder
 	m_pCylinder = new PrimitiveClass();
-	m_pCylinder->GenerateCylinder(100.0f, 100.0f, 10, REGREEN);
+	m_pCylinder->GenerateCylinder(70.0f, 70.0f, 10, REGREEN);
 
 	//Calculate the first projections
 	m_m4Projection = glm::perspective(45.0f, 1080.0f / 768.0f, 0.01f, 1000.0f);
@@ -25,17 +26,32 @@ void AppClass::InitVariables(void)
 	sf::Vector2i n = sf::Vector2i(960, 540);
 	sf::Mouse::setPosition(n);
 
+	//oM = sf::Mouse::getPosition();
+	//POINT pt;
+	//GetCursorPos(&pt);
+	//oM.x = pt.x;
+	//oM.y = pt.y;
+
 }
+
 
 void AppClass::Update(void)
 {
+	POINT pt;
+	GetCursorPos(&pt);
+	oM.x = pt.x;
+	oM.y = pt.y;
+	UINT CenterX = m_pSystem->GetWindowX() + m_pSystem->GetWindowWidth() / 2;
+	UINT CenterY = m_pSystem->GetWindowY() + m_pSystem->GetWindowHeight() / 2;
+	sf::Vector2f dis = oM - sf::Vector2f(CenterX, CenterY);
+	vector2 mousePos = vector2(dis.x, dis.y);
 
-	sf::Vector2i y = sf::Mouse::getPosition();
-	vector2 mousePos = vector2(y.x, y.y);
+	SetCursorPos(CenterX, CenterY);
+	
 
 	lastPressedM = sf::Keyboard::isKeyPressed(sf::Keyboard::M);
 	lastPressedN = sf::Keyboard::isKeyPressed(sf::Keyboard::N);
-
+	ArcBall();
 	//Camera
 	m_m4Projection = m_Camera->GetProjection(false);
 	m_m4View = m_Camera->GetView(mousePos);

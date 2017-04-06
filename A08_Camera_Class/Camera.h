@@ -26,6 +26,8 @@ private:
 	matrix4 cameraProjO;
 	matrix4 cameraProjP;
 	vector3 cameraUp;
+	vector3 cameraForward;
+	vector3 cameraRight;
 	vector3 cameraPos;
 	vector3 cameraTarget;
 	glm::quat orientation;
@@ -34,6 +36,9 @@ private:
 	float cameraRoll;
 	bool mouseUse;
 	bool ortho;
+
+	float x;
+	float y;
 
 };
 

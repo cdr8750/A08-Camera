@@ -4,10 +4,11 @@ using namespace ReEng;
 
 Camera::Camera()
 {
-	cameraPos = vector3(0.0f, 0.0f, -1000.0f);
+	cameraPos = vector3(0.0f, 0.0f, -700.0f);
 	cameraProjO = glm::ortho(-1080.0f, 1080.0f, -768.0f, 768.0f, 0.01f, 100000.0f);
 	cameraProjP = glm::perspective(45.0f, 1080.0f / 768.0f, 0.01f, 100000.0f);
 	cameraUp = vector3(0.0f,1.0f,0.0f);
+	cameraForward = vector3(0.0f,0.0f,1.0f);
 	cameraTarget = vector3(0.0f, 0.0f, 0.0f);
 	orientation = glm::quat();
 	cameraYaw = 0;
@@ -15,6 +16,18 @@ Camera::Camera()
 	cameraRoll = 0;
 	mouseUse = false;
 	ortho = false;
+
+	UINT	MouseX, MouseY;		// Coordinates for the mouse
+	UINT	CenterX, CenterY;	// Coordinates for the center of the screen.
+
+	//CenterX = m_pSystem->GetWindowX() + m_pSystem->GetWindowWidth() / 2;
+	//CenterY = m_pSystem->GetWindowY() + m_pSystem->GetWindowHeight() / 2;
+
+	//Calculate the position of the mouse and store it
+	POINT pt;
+	GetCursorPos(&pt);
+	MouseX = pt.x;
+	MouseY = pt.y;
 }
 
 
@@ -31,11 +44,13 @@ void Camera::SwitchProjection() {
 }
 
 matrix4 Camera::GetView(vector2 mouse) {
+	y += mouse.y;
+	x += mouse.x;
 	if (mouseUse) {
 		orientation = glm::quat(vector3(cameraPitch, cameraYaw, cameraRoll));
 	}
 	else {
-		orientation = glm::quat(vector3(glm::radians((mouse.y - 540) / 10), glm::radians((mouse.x - 960) / 10), 0.0f));
+		orientation = glm::quat(vector3(glm::radians((y) / 10), glm::radians((x) / 10), 0.0f));
 	}
 	cameraView = glm::toMat4(orientation) * glm::translate(cameraPos);
 	return cameraView;
@@ -63,13 +78,17 @@ void Camera::SetUp(vector3 up) {
 }
 
 void Camera::MoveForward(float z) {
-	cameraPos.z += z;
-	cameraTarget.z += z;
+	cameraForward = vector3(0.0,0.0,z) * orientation;
+	cameraPos += glm::normalize(cameraForward);
+	//cameraPos.z += z;
+	//cameraTarget.z += z;
 }
 
 void Camera::MoveSideways(float x) {
-	cameraPos.x += x;
-	cameraTarget.x += x;
+	cameraRight = vector3(x, 0.0, 0.0) * orientation;
+	cameraPos += glm::normalize(cameraRight);
+	//cameraPos.x += x;
+	//cameraTarget.x += x;
 }
 
 void Camera::MoveVertical(float y) {
